@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class Oystercard
-  attr_accessor :balance, :entry_station, :exit_station
+  attr_accessor :balance, :entry_station, :exit_station, :journey_list
 
   MAX_BALANCE = 90
   MIN_FARE = 1 # min_fare would be equivalent to min_balance
 
   def initialize
     @balance = 0
+    @journey_list = []
   end
 
   def top_up(amount)
@@ -25,9 +26,10 @@ class Oystercard
 
   def touch_out(exit_station)
     deduct(MIN_FARE)
-    @entry_station = nil
-    @exit_station = exit_station
     !in_journey?
+    # @exit_station = exit_station
+    @journey_list << { entry: @entry_station, exit: exit_station }
+    @entry_station = nil
   end
 
   def in_journey?

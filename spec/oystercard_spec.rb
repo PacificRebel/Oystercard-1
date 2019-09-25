@@ -17,6 +17,10 @@ describe Oystercard do
     it 'initializes not in journey' do
       expect(card).not_to be_in_journey
     end
+
+    it 'has journey list' do
+      expect(card.journey_list).to be_empty
+    end
   end
 
   describe '#top_up' do
@@ -62,18 +66,27 @@ describe Oystercard do
       expect { card.touch_out(exit_station) }.to change { card.balance }.by -min_fare
     end
 
-    it 'records exit station on touch out' do
-      card.top_up(10)
-      card.touch_in(entry_station)
-      card.touch_out(exit_station)
-      expect(card.exit_station).to eq exit_station
-    end
+    # it 'records exit station on touch out' do
+    #   card.top_up(10)
+    #   card.touch_in(entry_station)
+    #   card.touch_out(exit_station)
+    #   expect(card.exit_station).to eq exit_station
+    # end
 
     it 'forgets entry station on touch out' do
     card.top_up(10)
     card.touch_in(entry_station)
     card.touch_out(exit_station)
     expect(card.entry_station).to eq nil
+    end
+
+  context 'complete journey' do
+    it 'takes a hash to store journey' do
+      card.top_up(10)
+      card.touch_in(entry_station)
+      card.touch_out(exit_station)
+      expect(card.journey_list).to include({entry: entry_station, exit: exit_station })
+    end
     end
   end
 end
